@@ -1,11 +1,13 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const authRouter =  require('./routers/authRouter')
+const corsMiddleware = require('./middleware/corsMiddleware');
 
 const PORT = process.env.PORT || 5000
 
 const app =express()
 
+app.use(corsMiddleware)
 app.use(express.json())
 app.use("/auth", authRouter);
 mongoose.set('strictQuery', false);

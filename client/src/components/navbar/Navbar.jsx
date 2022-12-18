@@ -1,13 +1,17 @@
 import React from "react";
-import "../styles/navbar.less";
+import "./navbar.css";
 import { NavLink } from "react-router-dom";
 const Navbar = () => {
   return (
     <div className="navbar">
       <div className="container">
-        <div className="navbar__header">MERN CLOUD</div>
-        <div className="navbar__login">Войти</div>
-        <div className="navbar__registration">Регистрация</div>
+        <div className="navbar__header">vrotebal tkp</div>
+        <div className="navbar__login">
+          <NavLink to="/login">Войти</NavLink>
+        </div>
+        <div className="navbar__registration">
+          <NavLink to="/registration">Регистрация</NavLink>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,27 @@
+.navbar {
+  display: flex;
+  height: 50px;
+  justify-content: center;
+  background-color: #fefefe;
+  width: 100%;
+}
+.navbar__header {
+  margin-left: 10px;
+  font-size: 24px;
+  font-weight: 700;
+}
+.navbar__login {
+  margin-left: auto;
+  margin-right: 20px;
+  font-size: 20px;
+}
+.navbar__registration {
+  margin-left: 5px;
+  margin-right: 20px;
+  font-size: 20px;
+}
+.container {
+  width: 1140px;
+  display: flex;
+  align-items: center;
+}

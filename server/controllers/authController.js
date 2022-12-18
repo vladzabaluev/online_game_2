@@ -22,7 +22,8 @@ class authController{
                 return res.status(400).json({message: "Ошибка при регистрации", errors})
             }
             const {userName, password} = req.body;
-          
+           
+            
             const candidate = await User.findOne({userName})
             if(candidate){
                 return res.status(400).json({message: "Пользователь с таким именем уже существует"})
@@ -54,6 +55,7 @@ class authController{
                 return res.status(400).json({message: `Неверный пароль`})
             }
             const token = generateAccessToken(user._id, user.roles);
+            console.log(token);
             return res.json({token})
         } catch (e){
             console.log(e);

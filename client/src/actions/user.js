@@ -13,7 +13,7 @@ export const registration = async( login, password) =>{
 
 }
 
-export const login_test = async( login, password) =>{
+export const login_test = ( login, password) =>{
     return async (dispatch) =>{
         try{
             const responce = await axios.post("http://localhost:5000/auth/login", {

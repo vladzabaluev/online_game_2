@@ -5,6 +5,21 @@ import { setIsCounting, setIsPlaying } from "../../reducers/userReducers";
 import { getPadTime } from "../helpers/getPadTime";
 import "../timer/timer.css";
 
+const socket = new WebSocket("ws://localhost:5000/:id");
+
+socket.onopen = () => {
+  socket.send(
+    JSON.stringify({
+      method: "connection",
+      userName: "Тестовое имя",
+    })
+  );
+};
+
+socket.onmessage = (event) => {
+  console.log("С сервера пришло сообщение", event.data);
+};
+
 const Timer = () => {
   const [timer, setTimer] = useState(5);
   const isCounting = useSelector((state) => state.user.isCounting);
@@ -40,16 +55,31 @@ const Timer = () => {
   function TimerStart(durationTime) {
     setTimer(durationTime);
     dispatch(setIsCounting(true));
+    socket.send(
+      JSON.stringify({
+        method: "StartTimer",
+      })
+    );
   }
 
   function FinishGame() {
     dispatch(setIsCounting(false));
+    socket.send(
+      JSON.stringify({
+        method: "GameOver",
+      })
+    );
   }
 
   function StartGame(durationTime) {
     setTimer(durationTime);
     dispatch(setIsCounting(true));
     dispatch(setIsPlaying(true));
+    socket.send(
+      JSON.stringify({
+        method: "GameStart",
+      })
+    );
   }
 
   return (

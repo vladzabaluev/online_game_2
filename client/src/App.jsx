@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import "./components/styles/app.css";
 import Registration from "./components/authorization/Registration";
@@ -33,7 +33,7 @@ function App() {
           {isAuth && (
             <Routes>
               <Route
-                path="/"
+                path="/:id"
                 element={
                   <div>
                     <Timer></Timer>
@@ -41,6 +41,7 @@ function App() {
                   </div>
                 }
               />
+              <Route path="/" element={<Navigate to={`f${(+new Date()).toString(16)}`} />} />
             </Routes>
           )}
         </div>

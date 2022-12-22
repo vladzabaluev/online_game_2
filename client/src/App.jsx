@@ -7,6 +7,8 @@ import Login from "./components/authorization/Login";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { auth } from "./actions/user";
+import Counter from "./components/counter/Counter";
+import Timer from "./components/timer/Timer";
 
 function App() {
   const isAuth = useSelector((state) => state.user.isAuth);
@@ -17,17 +19,33 @@ function App() {
   });
 
   return (
-    <BrowserRouter>
-      <div className="app">
-        <Navbar></Navbar>
-        {!isAuth && (
-          <Routes>
-            <Route path="/registration" element={<Registration />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        )}
-      </div>
-    </BrowserRouter>
+    <div>
+      <BrowserRouter>
+        <div className="app">
+          <Navbar></Navbar>
+
+          {!isAuth && (
+            <Routes>
+              <Route path="/registration" element={<Registration />} />
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          )}
+          {isAuth && (
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <div>
+                    <Timer></Timer>
+                    <Counter></Counter>
+                  </div>
+                }
+              />
+            </Routes>
+          )}
+        </div>
+      </BrowserRouter>
+    </div>
   );
 }
 

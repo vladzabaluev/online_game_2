@@ -4,22 +4,54 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../counter/counter.css";
 
+const socket = new WebSocket("ws://localhost:5000/:id");
+
 const Counter = () => {
   const [clickCount, setClickCount] = useState(0);
+  const [isCounting, setIsCounting] = useState(0);
+  const [isGamePlaying, setIsGamePlaying] = useState(0);
 
-  const isCounting = useSelector((state) => state.user.isCounting);
-  const gameIsPlayed = useSelector((state) => state.user.isPlaying);
+  const userName = useSelector((state) => state.user.currentUser.userName);
+
+  socket.onmessage = (event) => {
+    event = JSON.parse(event.data);
+    switch (event.method) {
+      case "TimeValueChanged":
+        setIsCounting(true);
+        break;
+      case "StartGame":
+        setIsGamePlaying(true);
+        break;
+      case "FinishGame":
+        setIsCounting(false);
+        socket.send(
+          JSON.stringify({
+            method: "GameOver",
+            result: clickCount,
+            user: userName,
+          })
+        );
+        break;
+      case "ReloadPage":
+        window.location.reload();
+        break;
+    }
+  };
+
   function incrementScore() {
-    if (isCounting && gameIsPlayed) setClickCount(clickCount + 1);
+    if (isCounting && isGamePlaying) setClickCount(clickCount + 1);
   }
 
   function restartPage() {
-    console.log("restart");
-    window.location.reload();
+    socket.send(
+      JSON.stringify({
+        method: "Reload",
+      })
+    );
   }
   return (
     <div>
-      {isCounting && gameIsPlayed ? (
+      {isCounting && isGamePlaying ? (
         <button className="mainButton" onClick={incrementScore}>
           Кликай <br></br> {clickCount}
         </button>
@@ -27,7 +59,7 @@ const Counter = () => {
         <></>
       )}
 
-      {!isCounting && gameIsPlayed ? (
+      {!isCounting && isGamePlaying ? (
         <div>
           {" "}
           <button className="restartButton" onClick={restartPage}>

@@ -25,6 +25,7 @@ const start = async () => {
 
 app.ws("/:id", (ws, req) => {
   ws.send("Ты успешно подключился");
+
   ws.on("message", (msg) => {
     msg = JSON.parse(msg);
     console.log(`Сообщение пришло `);
@@ -32,14 +33,29 @@ app.ws("/:id", (ws, req) => {
       case "connection":
         connectionHandler(ws, msg);
         break;
-      case "StartTimer":
+      case "StartCountdown":
         console.log("Обратный отсчет начался");
+        let timer = msg.timer;
+
+        sendTimerValue(ws, msg, timer);
+
         break;
       case "GameOver":
         console.log("Игра окончена");
+        if (!users.includes(msg.user)) {
+          users.push(msg.user);
+          results.push(msg.result);
+        }
+
+        console.log(users);
+        console.log(results);
         break;
-      case "GameStart":
+      case "StartGame":
         console.log("Игра началась");
+        sendGameTimerValue(ws, msg, msg.timer);
+        break;
+      case "Reload":
+        reload(ws, msg);
         break;
     }
   });
@@ -55,7 +71,91 @@ connectionHandler = (ws, msg) => {
 broadcastHandler = (ws, msg) => {
   aWSS.clients.forEach((client) => {
     if (client.id === msg.id) {
-      client.send(`Пользователь с именем ${msg.userName} подключился`);
+      //  client.send(`Пользователь с именем ${msg.userName} подключился`);
+    }
+  });
+};
+
+sendTimerValue = (ws, msg, timer) => {
+  aWSS.clients.forEach((client) => {
+    if (client.id === msg.id) {
+      client.send(
+        JSON.stringify({
+          method: "TimeValueChanged",
+          newTimerValue: timer,
+        })
+      );
+    }
+  });
+  timer--;
+  let timeout = setTimeout(() => {
+    sendTimerValue(ws, msg, timer);
+  }, 1000);
+
+  if (timer < 0) {
+    clearTimeout(timeout);
+    sendStartGame(ws, msg);
+
+    //  isGamePlaying = true;
+  }
+};
+
+sendStartGame = (ws, msg) => {
+  aWSS.clients.forEach((client) => {
+    if (client.id === msg.id) {
+      client.send(
+        JSON.stringify({
+          method: "StartGame",
+        })
+      );
+    }
+  });
+};
+
+sendGameTimerValue = (ws, msg, timer) => {
+  aWSS.clients.forEach((client) => {
+    if (client.id === msg.id) {
+      client.send(
+        JSON.stringify({
+          method: "TimeValueChanged",
+          newTimerValue: timer,
+        })
+      );
+    }
+  });
+  timer--;
+  let timeout = setTimeout(() => {
+    sendGameTimerValue(ws, msg, timer);
+  }, 1000);
+
+  if (timer < 0) {
+    clearTimeout(timeout);
+    finishGame(ws, msg);
+
+    //  isGamePlaying = true;
+  }
+};
+
+finishGame = (ws, msg) => {
+  aWSS.clients.forEach((client) => {
+    if (client.id === msg.id) {
+      client.send(
+        JSON.stringify({
+          method: "FinishGame",
+        })
+      );
+    }
+  });
+};
+
+reload = (ws, msg) => {
+  aWSS.clients.forEach((client) => {
+    if (client.id === msg.id) {
+      client.send(
+        JSON.stringify({
+          method: "ReloadPage",
+        })
+      );
     }
   });
 };

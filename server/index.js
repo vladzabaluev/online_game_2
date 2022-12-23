@@ -42,13 +42,13 @@ app.ws("/:id", (ws, req) => {
         break;
       case "GameOver":
         console.log("Игра окончена");
-        if (!users.includes(msg.user)) {
-          users.push(msg.user);
-          results.push(msg.result);
-        }
+        // if (!users.includes(msg.user)) {
+        //   users.push(msg.user);
+        //   results.push(msg.result);
+        // }
 
-        console.log(users);
-        console.log(results);
+        console.log(msg.user);
+        console.log(msg.result);
         break;
       case "StartGame":
         console.log("Игра началась");

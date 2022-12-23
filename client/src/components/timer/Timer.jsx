@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { setIsCounting, setIsPlaying } from "../../reducers/userReducers";
 import { getPadTime } from "../helpers/getPadTime";
 import "../timer/timer.css";
@@ -46,6 +47,7 @@ const Timer = () => {
         break;
       case "FinishGame":
         setIsCounting(false);
+        socket.close();
         break;
     }
   };

@@ -53,7 +53,7 @@ app.ws("/:id", (ws, req) => {
             result: msg.result,
           });
         }
-        if (testA.length * testA.length == getUsersCount(ws, msg)) {
+        if (testA.length * testA.length >= getUsersCount(ws, msg)) {
           sortResults(ws, msg);
 
           break;

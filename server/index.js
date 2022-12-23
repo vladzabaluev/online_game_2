@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const authRouter = require("./routers/authRouter");
 const corsMiddleware = require("./middleware/corsMiddleware");
+const { getUsers } = require("./controllers/authController");
 
 const PORT = process.env.PORT || 5000;
 
@@ -22,7 +23,9 @@ const start = async () => {
     console.log(e);
   }
 };
-
+var results = [];
+var users = [];
+var testA = [];
 app.ws("/:id", (ws, req) => {
   ws.send("Ты успешно подключился");
 
@@ -42,13 +45,21 @@ app.ws("/:id", (ws, req) => {
         break;
       case "GameOver":
         console.log("Игра окончена");
-        // if (!users.includes(msg.user)) {
-        //   users.push(msg.user);
-        //   results.push(msg.result);
-        // }
+        if (!users.includes(msg.user)) {
+          users.push(msg.user);
+          results.push(msg.result);
+          testA.push({
+            userName: msg.user,
+            result: msg.result,
+          });
+        }
+        if (testA.length * testA.length == getUsersCount(ws, msg)) {
+          sortResults(ws, msg);
 
-        console.log(msg.user);
-        console.log(msg.result);
+          break;
+        }
+        // console.log(msg.user);
+        // console.log(msg.result);
         break;
       case "StartGame":
         console.log("Игра началась");
@@ -56,6 +67,11 @@ app.ws("/:id", (ws, req) => {
         break;
       case "Reload":
         reload(ws, msg);
+
+        results = [];
+        users = [];
+
+        testA = [];
         break;
     }
   });
@@ -75,6 +91,18 @@ broadcastHandler = (ws, msg) => {
     }
   });
 };
+
+function getUsersCount(ws, msg) {
+  let userCount = 0;
+  aWSS.clients.forEach((client) => {
+    if (client.id === msg.id) {
+      userCount++;
+    }
+  });
+  console.log(`Количество пользователей в узле: ${userCount}`);
+
+  return userCount;
+}
 
 sendTimerValue = (ws, msg, timer) => {
   aWSS.clients.forEach((client) => {
@@ -154,6 +182,36 @@ reload = (ws, msg) => {
       client.send(
         JSON.stringify({
           method: "ReloadPage",
+        })
+      );
+    }
+  });
+};
+
+sortResults = (ws, msg) => {
+  // function compareNumeric(a, b) {
+  //   if (a > b) return 1;
+  //   if (a == b) return 0;
+  //   if (a < b) return -1;
+  // }
+  // results.sort(compareNumeric);
+  // console.log("Отсортированный массив");
+  var maxValue = -1;
+  let winnerName;
+  testA.forEach((element) => {
+    if (element.result > maxValue) {
+      maxValue = element.result;
+      winnerName = element.userName;
+    }
+  });
+  console.log(winnerName);
+  aWSS.clients.forEach((client) => {
+    if (client.id === msg.id) {
+      client.send(
+        JSON.stringify({
+          method: "ShowFinalResult",
+          userName: winnerName,
+          winnerCliCkCount: maxValue,
         })
       );
     }

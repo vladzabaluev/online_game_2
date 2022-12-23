@@ -11,10 +11,14 @@ const Counter = () => {
   const [isCounting, setIsCounting] = useState(0);
   const [isGamePlaying, setIsGamePlaying] = useState(0);
 
+  const [winnerName, setWinnerName] = useState();
+  const [winnerScore, setWinnerScore] = useState();
+
   const userName = useSelector((state) => state.user.currentUser.userName);
 
   socket.onmessage = (event) => {
     event = JSON.parse(event.data);
+    console.log(event);
     switch (event.method) {
       case "TimeValueChanged":
         setIsCounting(true);
@@ -34,6 +38,12 @@ const Counter = () => {
         break;
       case "ReloadPage":
         window.location.reload();
+        break;
+      case "ShowFinalResult":
+        setIsCounting(false);
+        setWinnerName(event.userName);
+        setWinnerScore(event.winnerCliCkCount);
+
         break;
     }
   };
@@ -63,7 +73,11 @@ const Counter = () => {
         <div>
           {" "}
           <button className="restartButton" onClick={restartPage}>
-            Перезагрузить страницу
+            Перезапустить игру
+            <br></br>
+            Победитель: {winnerName}
+            <br></br>
+            Его очки: {winnerScore}
           </button>
           <button className="mainButton">Ваш результат: {clickCount}</button>
         </div>

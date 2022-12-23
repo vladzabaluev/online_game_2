@@ -45,7 +45,7 @@ const Timer = () => {
           })
         );
         break;
-      case "FinishGame":
+      case "ShowFinalResult":
         setIsCounting(false);
         socket.close();
         break;

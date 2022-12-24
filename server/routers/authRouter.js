@@ -19,5 +19,6 @@ router.get("/auth", authMiddleware, controller.auth);
 router.get("/users", roleMiddleware(["ADMIN"]), controller.getUsers);
 router.post("/win", authMiddleware, gameController.changeWinCount);
 router.post("/constils", gameController.constils);
+router.post("/changeNickname", authMiddleware, gameController.changeNickName);
 
 module.exports = router;

@@ -12,7 +12,9 @@ const Navbar = () => {
   return (
     <div className="navbar">
       <div className="container">
-        <div className="navbar__header">Курсовая</div>
+        <div className="navbar__header">
+          <NavLink to="/:id">Курсовая</NavLink>
+        </div>
         {!isAuth && (
           <div className="navbar__login">
             <NavLink to="/login">Войти</NavLink>
@@ -24,7 +26,11 @@ const Navbar = () => {
           </div>
         )}
         {console.log(userName)}
-        {isAuth && <div className="navbar__login">Добро пожаловать, {userName} </div>}
+        {isAuth && (
+          <div className="navbar__login">
+            <NavLink to="/profile">Добро пожаловать, {userName} </NavLink>
+          </div>
+        )}
         {isAuth && (
           <div className="navbar__registration" onClick={() => dispatch(logout())}>
             Выход

@@ -38,11 +38,29 @@ export const auth = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       dispatch(setUser(response.data.user));
-      console.log(response.data.user.userName);
+      console.log(response.data.user);
       localStorage.setItem("token", response.data.token);
     } catch (e) {
       console.log(e);
       localStorage.removeItem("token");
+    }
+  };
+};
+
+export const changeNickName = (userName, newUserName) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/auth/changeNickname`,
+        { userName, newUserName },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      dispatch(setUser(response.data.user));
+      console.log(response.data.user);
+    } catch (e) {
+      console.log(e);
     }
   };
 };

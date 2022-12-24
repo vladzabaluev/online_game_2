@@ -14,7 +14,7 @@ const Counter = () => {
   const [winnerName, setWinnerName] = useState();
   const [winnerScore, setWinnerScore] = useState();
 
-  const userName = useSelector((state) => state.user.currentUser.userName);
+  const user = useSelector((state) => state.user.currentUser);
 
   socket.onmessage = (event) => {
     event = JSON.parse(event.data);
@@ -32,7 +32,7 @@ const Counter = () => {
           JSON.stringify({
             method: "GameOver",
             result: clickCount,
-            user: userName,
+            user: user.userName,
           })
         );
         break;
@@ -62,7 +62,18 @@ const Counter = () => {
   return (
     <div>
       {isCounting && isGamePlaying ? (
-        <button className="mainButton" onClick={incrementScore}>
+        <button
+          className="mainButton"
+          style={
+            user.skins && user.skins.length > 0
+              ? {
+                  cursor: "auto",
+                  cursor: "url(" + user.skins[0].cursorImage + ") 64 64, auto",
+                }
+              : null
+          }
+          onClick={incrementScore}
+        >
           Кликай <br></br> {clickCount}
         </button>
       ) : (

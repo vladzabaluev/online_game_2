@@ -1,13 +1,16 @@
 const User = require("../models/User");
 const Role = require("../models/Role");
+const Rank = require("../models/Rank");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { secret } = require("../config/config");
+const Skin = require("../models/Skin");
 
 const generateAccessToken = (id, roles) => {
   const payload = {
     id,
+
     roles,
   };
   return jwt.sign(payload, secret, { expiresIn: "24h" });
@@ -71,11 +74,15 @@ class authController {
     try {
       const user = await User.findOne({ _id: req.user.id });
       const token = generateAccessToken(user._id, user.roles);
+      const userRank = await Rank.findOne({ _id: user.rank });
+      const userSkins = await Skin.find({ _id: user.skins });
       return res.json({
         token,
         user: {
           id: user.id,
           userName: user.userName,
+          skins: userSkins,
+          rank: userRank,
         },
       });
     } catch (e) {

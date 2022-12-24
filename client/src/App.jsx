@@ -9,21 +9,34 @@ import { useEffect } from "react";
 import { auth } from "./actions/user";
 import Counter from "./components/counter/Counter";
 import Timer from "./components/timer/Timer";
+import Profile from "./components/Profile/Profile";
 
 function App() {
   const isAuth = useSelector((state) => state.user.isAuth);
+  const user = useSelector((state) => state.user.currentUser);
+  const cursor = useSelector((state) => state.currentCursor);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(auth());
-  });
+  }, []);
 
   return (
     <div>
       <BrowserRouter>
-        <div className="app">
+        <div
+          className="app"
+          style={
+            user.skins && user.skins.length > 0
+              ? {
+                  cursor: "auto",
+                  // cursor: cursor,
+                  cursor: "url(" + cursor + ") 64 64, auto",
+                }
+              : null
+          }
+        >
           <Navbar></Navbar>
-
           {!isAuth && (
             <Routes>
               <Route path="/registration" element={<Registration />} />
@@ -42,6 +55,7 @@ function App() {
                 }
               />
               <Route path="/" element={<Navigate to={`f${(+new Date()).toString(16)}`} />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           )}
         </div>

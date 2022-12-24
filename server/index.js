@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const authRouter = require("./routers/authRouter");
 const corsMiddleware = require("./middleware/corsMiddleware");
 const { getUsers } = require("./controllers/authController");
+const gameController = require("./controllers/gameController");
 
 const PORT = process.env.PORT || 5000;
 
@@ -12,6 +13,7 @@ const aWSS = WSServer.getWss();
 
 app.use(corsMiddleware);
 app.use(express.json());
+app.use(express.static("data"));
 app.use("/auth", authRouter);
 mongoose.set("strictQuery", false);
 
@@ -188,7 +190,7 @@ reload = (ws, msg) => {
   });
 };
 
-sortResults = (ws, msg) => {
+sortResults = async (ws, msg) => {
   // function compareNumeric(a, b) {
   //   if (a > b) return 1;
   //   if (a == b) return 0;
@@ -204,7 +206,8 @@ sortResults = (ws, msg) => {
       winnerName = element.userName;
     }
   });
-  console.log(winnerName);
+  console.log(maxValue);
+  await gameController.changeWinCountService(winnerName);
   aWSS.clients.forEach((client) => {
     if (client.id === msg.id) {
       client.send(

@@ -29,7 +29,7 @@ class authController {
 
       const hashPassword = bcrypt.hashSync(password, 7);
       const userRole = await Role.findOne({ RoleName: "USER" });
-      //  const adminRole = await Role.findOne({RoleName: "ADMIN"})
+      // const adminRole = await Role.findOne({ RoleName: "ADMIN" });
       const user = new User({ userName, password: hashPassword, roles: userRole.RoleName });
 
       await user.save();
@@ -43,6 +43,7 @@ class authController {
   async login(req, res) {
     try {
       const { userName, password } = req.body;
+
       const user = await User.findOne({ userName });
       if (!user) {
         return res.status(400).json({ message: `Пользователь с именем ${userName} не найден` });

@@ -15,6 +15,7 @@ const Counter = () => {
   const [winnerScore, setWinnerScore] = useState();
 
   const user = useSelector((state) => state.user.currentUser);
+  const cursor = useSelector((state) => state.user.currentCursor);
 
   socket.onmessage = (event) => {
     event = JSON.parse(event.data);
@@ -68,7 +69,8 @@ const Counter = () => {
             user.skins && user.skins.length > 0
               ? {
                   cursor: "auto",
-                  cursor: "url(" + user.skins[0].cursorImage + ") 64 64, auto",
+                  // cursor: cursor,
+                  cursor: "url(" + cursor + ") 64 64, auto",
                 }
               : null
           }
@@ -83,7 +85,19 @@ const Counter = () => {
       {!isCounting && isGamePlaying ? (
         <div>
           {" "}
-          <button className="restartButton" onClick={restartPage}>
+          <button
+            className="restartButton"
+            style={
+              user.skins && user.skins.length > 0
+                ? {
+                    cursor: "auto",
+                    // cursor: cursor,
+                    cursor: "url(" + cursor + ") 64 64, auto",
+                  }
+                : null
+            }
+            onClick={restartPage}
+          >
             Перезапустить игру
             <br></br>
             Победитель: {winnerName}

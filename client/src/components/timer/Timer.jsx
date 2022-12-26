@@ -28,6 +28,8 @@ const Timer = () => {
 
   const minutes = getPadTime(Math.floor(timer / 60));
   const seconds = getPadTime(timer - minutes / 60);
+  const user = useSelector((state) => state.user.currentUser);
+  const cursor = useSelector((state) => state.user.currentCursor);
 
   socket.onmessage = (event) => {
     event = JSON.parse(event.data);
@@ -62,10 +64,29 @@ const Timer = () => {
   }
 
   return (
-    <div>
+    <div
+      style={
+        user.skins && user.skins.length > 0
+          ? {
+              cursor: "auto",
+              // cursor: cursor,
+              cursor: "url(" + cursor + ") 64 64, auto",
+            }
+          : null
+      }
+    >
       {!isCounting && !isGamePlaying ? (
         <button
           className="timer"
+          style={
+            user.skins && user.skins.length > 0
+              ? {
+                  cursor: "auto",
+                  // cursor: cursor,
+                  cursor: "url(" + cursor + ") 64 64, auto",
+                }
+              : null
+          }
           onClick={() => {
             TimerStart(3);
           }}
@@ -77,7 +98,18 @@ const Timer = () => {
       )}
       {isCounting && !isGamePlaying ? <h1 className="timer">Готовься {timer}</h1> : <></>}
       {isCounting && isGamePlaying ? (
-        <h1 className="timer">
+        <h1
+          className="timer"
+          style={
+            user.skins && user.skins.length > 0
+              ? {
+                  cursor: "auto",
+                  // cursor: cursor,
+                  cursor: "url(" + cursor + ") 64 64, auto",
+                }
+              : null
+          }
+        >
           Осталось {minutes}:{seconds}
         </h1>
       ) : (

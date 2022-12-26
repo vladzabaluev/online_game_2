@@ -8,13 +8,13 @@ import { setCursor } from "../../reducers/userReducers";
 
 const Profile = () => {
   const user = useSelector((state) => state.user.currentUser);
-  const cursor = useSelector((state) => state.user.currentCursor);
   const dispatch = useDispatch();
   const [login, setLogin] = useState(user.userName);
   return (
     <div className="profile">
       <div className="authorization__header">Личный кабинет </div>
-      <div>Твоё звание: {user.rank.rankName}</div>
+
+      <div> {user.rank ? <div> Твоё звание: {user.rank.rankName}</div> : <div>Выиграй 5 игр, чтобы получить новый ранг</div>}</div>
       <Input value={login} setValue={setLogin} type="text" placeholder="Измените логин"></Input>
 
       <button

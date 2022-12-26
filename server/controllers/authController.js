@@ -56,12 +56,16 @@ class authController {
         return res.status(400).json({ message: `Неверный пароль` });
       }
       const token = generateAccessToken(user._id, user.roles);
+      const userRank = await Rank.findOne({ _id: user.rank });
+      const userSkins = await Skin.find({ _id: user.skins });
       console.log(token);
       return res.json({
         token,
         user: {
           id: user.id,
           userName: user.userName,
+          skins: userSkins,
+          rank: userRank,
         },
       });
     } catch (e) {

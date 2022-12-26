@@ -14,7 +14,7 @@ import Profile from "./components/Profile/Profile";
 function App() {
   const isAuth = useSelector((state) => state.user.isAuth);
   const user = useSelector((state) => state.user.currentUser);
-  const cursor = useSelector((state) => state.currentCursor);
+  const cursor = useSelector((state) => state.user.currentCursor);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,6 +23,7 @@ function App() {
 
   return (
     <div>
+      {console.log(user.skins)}
       <BrowserRouter>
         <div
           className="app"

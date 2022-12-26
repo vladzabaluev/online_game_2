@@ -13,7 +13,7 @@ const Navbar = () => {
     <div className="navbar">
       <div className="container">
         <div className="navbar__header">
-          <NavLink to="/:id">Курсовая</NavLink>
+          <NavLink to="/">Курсовая</NavLink>
         </div>
         {!isAuth && (
           <div className="navbar__login">
